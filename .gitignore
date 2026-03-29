@@ -12,7 +12,7 @@ env/
 data/receipts/*
 data/encrypted/*
 !data/.gitkeep
-backend/data/purchaseguard.db
+data/purchaseguard.db
 
 # IDE
 .vscode/
