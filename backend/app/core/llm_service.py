@@ -1,136 +1,3 @@
-# """
-# Hugging Face LLM Service - Free Inference API
-# Production-ready integration for receipt data extraction
-# """
-# import os
-# from typing import Optional, Dict, Any
-# from langchain_huggingface import HuggingFaceEndpoint
-# from langchain_core.prompts import ChatPromptTemplate
-# from langchain_core.output_parsers import JsonOutputParser
-# from dotenv import load_dotenv
-# import logging
-
-# load_dotenv()
-
-# logger = logging.getLogger(__name__)
-
-# class HuggingFaceService:
-#     """Free Hugging Face Inference API Service"""
-    
-#     def __init__(self):
-#         self.api_key = os.getenv("HUGGINGFACE_API_KEY", "")
-#         self.model_name = os.getenv("HF_MODEL_NAME", "microsoft/Phi-3-mini-4k-instruct")
-#         self.rate_limit = int(os.getenv("HF_RATE_LIMIT", "5"))
-        
-#         if not self.api_key or self.api_key == "hf_your_free_token_here":
-#             logger.warning("Hugging Face API key not configured. Using mock mode.")
-#             self.mock_mode = True
-#         else:
-#             self.mock_mode = False
-#             self._initialize_llm()
-    
-#     def _initialize_llm(self):
-#         """Initialize Hugging Face LLM endpoint"""
-#         try:
-#             self.llm = HuggingFaceEndpoint(
-#                 repo_id=self.model_name,
-#                 huggingfacehub_api_token=self.api_key,
-#                 task="text-generation",
-#                 max_new_tokens=1024,
-#                 temperature=0.1,  # Low temperature for structured output
-#                 top_p=0.95,
-#                 repetition_penalty=1.1,
-#             )
-#             logger.info(f"Initialized Hugging Face LLM: {self.model_name}")
-#         except Exception as e:
-#             logger.error(f"Failed to initialize LLM: {str(e)}")
-#             self.mock_mode = True
-    
-#     def extract_receipt_data(self, ocr_text: str) -> Dict[str, Any]:
-#         """
-#         Extract structured data from OCR text using LLM
-#         Returns: merchant, date, amount, items, etc.
-#         """
-#         if self.mock_mode:
-#             return self._mock_extraction(ocr_text)
-        
-#         prompt_template = ChatPromptTemplate.from_messages([
-#             ("system", """You are a receipt data extraction expert. 
-#             Extract structured information from receipt text.
-#             Return ONLY valid JSON with these fields:
-#             - merchant_name: string (store name)
-#             - purchase_date: string (YYYY-MM-DD format)
-#             - total_amount: float (numeric only)
-#             - currency: string (USD, EUR, etc.)
-#             - items: array of objects with name and price
-#             - payment_method: string (if mentioned)
-            
-#             If field not found, use null. Do not add explanations."""),
-#             ("human", "Extract data from this receipt text:\n\n{receipt_text}")
-#         ])
-        
-#         parser = JsonOutputParser()
-#         chain = prompt_template | self.llm | parser
-        
-#         try:
-#             result = chain.invoke({"receipt_text": ocr_text[:3000]})  # Limit text
-#             logger.info("Receipt data extracted successfully")
-#             return result
-#         except Exception as e:
-#             logger.error(f"LLM extraction failed: {str(e)}")
-#             return self._mock_extraction(ocr_text)
-    
-#     def calculate_store_policy(self, merchant_name: str) -> Dict[str, int]:
-#         """
-#         Get return/warranty policy based on merchant
-#         Returns days for return window and warranty
-#         """
-#         if self.mock_mode:
-#             return {"return_days": 30, "warranty_months": 12}
-        
-#         prompt_template = ChatPromptTemplate.from_messages([
-#             ("system", """You know store return policies. 
-#             Return ONLY JSON: {{"return_days": number, "warranty_months": number}}
-#             Common policies:
-#             - Electronics stores: 30 days return, 12 months warranty
-#             - Clothing stores: 60 days return, 0 months warranty
-#             - Grocery stores: 7 days return, 0 months warranty
-#             - Amazon: 30 days return, varies warranty
-#             - Best Buy: 15-30 days return, 12 months warranty
-#             - Walmart: 90 days return, varies warranty"""),
-#             ("human", "What is the return policy for: {merchant}?")
-#         ])
-        
-#         parser = JsonOutputParser()
-#         chain = prompt_template | self.llm | parser
-        
-#         try:
-#             result = chain.invoke({"merchant": merchant_name})
-#             return result
-#         except Exception as e:
-#             logger.error(f"Policy lookup failed: {str(e)}")
-#             return {"return_days": 30, "warranty_months": 12}  # Default
-    
-#     def _mock_extraction(self, ocr_text: str) -> Dict[str, Any]:
-#         """Mock extraction for testing without API key"""
-#         import re
-        
-#         # Simple regex fallback
-#         amount_match = re.search(r'\$?(\d+\.\d{2})', ocr_text)
-#         date_match = re.search(r'(\d{1,2}/\d{1,2}/\d{2,4})', ocr_text)
-        
-#         return {
-#             "merchant_name": "Unknown Store",
-#             "purchase_date": date_match.group(0) if date_match else None,
-#             "total_amount": float(amount_match.group(1)) if amount_match else 0.0,
-#             "currency": "USD",
-#             "items": [],
-#             "payment_method": None
-#         }
-
-# # Singleton instance
-# hf_service = HuggingFaceService()
-
 """
 Hugging Face LLM Service - Free Inference API
 With robust fallback for when API fails
@@ -138,7 +5,7 @@ With robust fallback for when API fails
 import os
 import re
 import logging
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -154,7 +21,7 @@ class HuggingFaceService:
         
         # Check if API key is properly configured
         if not self.api_key or self.api_key == "hf_your_free_token_here" or len(self.api_key) < 20:
-            logger.warning("⚠️ Hugging Face API key not configured. Using OCR fallback mode.")
+            logger.warning(" Hugging Face API key not configured. Using OCR fallback mode.")
             self.api_enabled = False
         else:
             self.api_enabled = True
