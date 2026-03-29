@@ -564,9 +564,7 @@ from sqlalchemy import select
 from datetime import datetime, timezone
 import os
 import uuid
-from typing import List
 import logging
-
 from app.core.database import get_db
 from app.core.security import get_current_user, encrypt_sensitive_data
 from app.models.models import User, Purchase, Alert
@@ -589,13 +587,8 @@ def validate_file(file: UploadFile) -> bool:
         return False
     return True
 
-# ============================================
-# ✅ CRITICAL: ROUTE ORDER - SPECIFIC FIRST!
-# ============================================
-# All specific routes (/stats, /alerts, /export) MUST come BEFORE /{purchase_id}
-# Otherwise FastAPI matches "stats" as purchase_id causing 422 errors!
 
-# 1. UPLOAD RECEIPT (Your working code - KEEP AS IS)
+# 1. UPLOAD RECEIPT
 @router.post("/upload", response_model=PurchaseResponse, status_code=status.HTTP_201_CREATED)
 async def upload_receipt(
     file: UploadFile = File(...),
@@ -709,7 +702,7 @@ async def upload_receipt(
     
     return purchase
 
-# 2. STATS (BEFORE /{purchase_id}!) - NO response_model
+# 2. STATS (BEFORE /{purchase_id}!)
 @router.get("/stats")
 async def get_purchase_stats(
     current_user: User = Depends(get_current_user),
@@ -914,9 +907,7 @@ async def get_purchases(
         logger.error(f"Get purchases error: {str(e)}")
         return []
 
-# ============================================
-# ⚠️ GENERIC ROUTES WITH {purchase_id} - MUST BE LAST!
-# ============================================
+# GENERIC ROUTES WITH {purchase_id}
 
 # 6. SINGLE PURCHASE (LAST!)
 @router.get("/{purchase_id}", response_model=PurchaseResponse)
