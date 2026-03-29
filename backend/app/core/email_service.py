@@ -6,7 +6,6 @@ import os
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from typing import List, Optional
 from datetime import datetime, timezone
 import logging
 from dotenv import load_dotenv
@@ -84,7 +83,7 @@ class EmailService:
         days_left = (deadline - datetime.now(timezone.utc)).days
         
         if days_left < 0:
-            subject = f"⚠️ RETURN EXPIRED - {merchant}"
+            subject = f" RETURN EXPIRED - {merchant}"
             body = f"""
             Your return window for {merchant} has EXPIRED.
             
@@ -125,7 +124,7 @@ class EmailService:
         days_left = (expiry - datetime.now(timezone.utc)).days
         
         if days_left < 0:
-            subject = f"⚠️ WARRANTY EXPIRED - {merchant}"
+            subject = f" WARRANTY EXPIRED - {merchant}"
             body = f"""
             Your warranty for {merchant} has EXPIRED.
             
