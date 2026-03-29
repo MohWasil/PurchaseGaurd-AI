@@ -4,7 +4,6 @@ Enhanced dashboard with charts, email alerts, and exports
 """
 import streamlit as st
 import requests
-import base64
 from datetime import datetime
 import plotly.express as px
 import plotly.graph_objects as go
@@ -130,17 +129,6 @@ def get_purchases() -> list:
         st.error(f"Fetch error: {str(e)}")
         return []
 
-# def get_stats() -> dict:
-#     """Get purchase statistics"""
-#     try:
-#         headers = get_headers()
-#         response = requests.get(f"{API_BASE_URL}/purchases/stats", headers=headers)
-#         if response.status_code == 200:
-#             return response.json()
-#         return {}
-#     except Exception as e:
-#         st.error(f"Fetch error: {str(e)}")
-#         return {}
 
 def get_stats() -> dict:
     """Get purchase statistics"""
@@ -169,51 +157,7 @@ def get_stats() -> dict:
             "active_warranties": 0
         }
 
-# def get_stats() -> dict:
-#     """Get purchase statistics"""
-#     try:
-#         headers = get_headers()
-#         response = requests.get(f"{API_BASE_URL}/purchases/stats", headers=headers, timeout=10)
-        
-#         # Log status for debugging
-#         if response.status_code != 200:
-#             st.warning(f"Stats API returned: {response.status_code}")
-#             st.warning(f"Response: {response.text[:200]}")
-        
-#         if response.status_code == 200:
-#             return response.json()
-        
-#         return {
-#             "total_purchases": 0,
-#             "total_amount": 0.0,
-#             "avg_purchase": 0.0,
-#             "categories": {},
-#             "upcoming_returns": 0,
-#             "active_warranties": 0
-#         }
-#     except Exception as e:
-#         st.warning(f"Stats fetch error: {str(e)}")
-#         return {
-#             "total_purchases": 0,
-#             "total_amount": 0.0,
-#             "avg_purchase": 0.0,
-#             "categories": {},
-#             "upcoming_returns": 0,
-#             "active_warranties": 0
-#         }
 
-
-# def get_alerts() -> list:
-#     """Get all alerts"""
-#     try:
-#         headers = get_headers()
-#         response = requests.get(f"{API_BASE_URL}/purchases/alerts", headers=headers)
-#         if response.status_code == 200:
-#             return response.json()
-#         return []
-#     except Exception as e:
-#         st.error(f"Fetch error: {str(e)}")
-#         return []
 def get_alerts() -> list:
     """Get all alerts"""
     try:
@@ -304,7 +248,7 @@ if not st.session_state.authenticated:
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("- 📧 Email deadline alerts")
-        st.markdown("- 📊 Dashboard charts & analytics")
+        st.markdown("- 📊 Dashboard charts and analytics")
         st.markdown("- 📁 CSV export functionality")
     with col2:
         st.markdown("- 🏷️ Auto-categorization")
@@ -335,8 +279,8 @@ else:
             st.metric("Total Spent", f"${stats.get('total_amount', 0):.2f}")
     
     # ============== DASHBOARD PAGE ==============
-    if page == "📊 Dashboard":
-        st.title("📊 PurchaseGuard Dashboard")
+    if page == " Dashboard":
+        st.title(" PurchaseGuard Dashboard")
         
         # Refresh button
         col1, col2 = st.columns([4, 1])
@@ -348,17 +292,7 @@ else:
         stats = get_stats()
         purchases = get_purchases()
         alerts = get_alerts()
-        
-        # Stats cards
-        # col1, col2, col3, col4 = st.columns(4)
-        # with col1:
-        #     st.metric("📦 Total Purchases", stats.get("total_purchases", 0))
-        # with col2:
-        #     st.metric("💰 Total Spent", f"${stats.get('total_amount', 0):.2f}")
-        # with col3:
-        #     st.metric("⏰ Upcoming Returns", stats.get("upcoming_returns", 0))
-        # with col4:
-        #     st.metric("🛡️ Active Warranties", stats.get("active_warranties", 0))
+
         col1, col2, col3, col4 = st.columns(4)
         with col1:
             st.metric("📦 Total Purchases", stats.get("total_purchases", 0))
