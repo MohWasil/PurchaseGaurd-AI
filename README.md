@@ -352,12 +352,13 @@ purchaseguard-ai/
 │   │   │   ├── llm_service.py   # Hugging Face LLM
 │   │   │   ├── email_service.py # SMTP email
 │   │   │   └── scheduler.py     # Background tasks
+│   │   ├──data/
+│   │   │   ├── receipts/            # Stored receipt images
+│   │   │   └── encrypted/           # Encrypted data
 │   │   └── agents/
 │   │       ├── __init__.py
 │   │       └── receipt_agent.py # LangGraph agent
-│   ├── data/
-│   │   ├── receipts/            # Stored receipt images
-│   │   └── encrypted/           # Encrypted data
+│   ├
 │   ├── venv/                    # Virtual environment
 │   ├── requirements.txt
 │   └── run.py

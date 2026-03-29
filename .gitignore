@@ -12,7 +12,6 @@ env/
 data/receipts/*
 data/encrypted/*
 !data/.gitkeep
-data/purchaseguard.db
 
 # IDE
 .vscode/
@@ -27,5 +26,8 @@ Thumbs.db
 # Logs
 *.log
 
-# Databases
-*.db
+# Ignore the unused root data folder
+data/
+
+# Ignore the database in the backend
+backend/data/purchaseguard.db
